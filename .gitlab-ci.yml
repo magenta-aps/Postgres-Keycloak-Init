@@ -1,0 +1,86 @@
+# Copyright (C) 2020 Magenta ApS, http://magenta.dk.
+# Contact: info@magenta.dk.
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+################################################################################
+# Changes to this file requires approval from Labs. Please add a person from   #
+# Labs as required approval to your MR if you have any changes.                #
+################################################################################
+
+# For `docker push` to work, the following envionment variables have to set in
+# the Gitlab UI.
+# RELEASE_REGISTRY_USER
+# RELEASE_REGISTRY_PASSWORD
+
+stages:
+  - lint-build
+  - release
+
+
+variables:
+  # Project variables
+  RELEASE_REGISTRY: docker.io
+  RELEASE_REGISTRY_IMAGE: index.docker.io/magentaaps/postgres-keycloak-os2mo
+
+  IMAGE_SHA_BASE: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+  IMAGE_TAG_BASE: ${RELEASE_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
+
+
+# Build stage
+#############
+
+.build_docker_base:
+  stage: lint-build
+  image:
+    # We use the `:debug` image as it contains `sh` needed by gitlab-ci.
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  tags:
+    - docker
+  script:
+    - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
+    - cat postgres-versions.txt | xargs -I PGV sh -c '
+      echo "===== Building ${IMAGE_SHA_BASE}-PGV-${TARGET} =====";
+      /kaniko/executor
+      --context=${CI_PROJECT_DIR}
+      --dockerfile=${CI_PROJECT_DIR}/docker/Dockerfile
+      --target=${TARGET}
+      --build-arg POSTGRES_VERSION=PGV
+      --destination=${IMAGE_SHA_BASE}-PGV-${TARGET}
+      --cache=true
+      '
+
+
+build_prod:
+  extends: .build_docker_base
+
+
+# Release stage
+###############
+
+.release-default:
+  stage: release
+  image: alpine
+  variables:
+    GIT_STRATEGY: none # We do not need the source code
+  tags:
+    - docker
+  before_script:
+    - apk add skopeo
+
+release-master:
+  extends: .release-default
+  rules:
+    - if: $CI_COMMIT_TAG
+  script:
+    - cat postgres-versions.txt | xargs -I PGV sh -c '
+      echo "===== Tagging ${IMAGE_TAG_BASE}-PGV =====";
+      skopeo copy
+      --src-creds=${CI_REGISTRY_USER}:${CI_BUILD_TOKEN}
+      --dest-creds=${RELEASE_REGISTRY_USER}:${RELEASE_REGISTRY_PASSWORD}
+      "docker://${IMAGE_SHA_BASE}-PGV-production"
+      "docker://${IMAGE_TAG_BASE}-PGV"
+      '
