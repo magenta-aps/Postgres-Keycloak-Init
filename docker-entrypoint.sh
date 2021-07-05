@@ -48,5 +48,5 @@ update_password() {
     fi
 }
 echo "Updating passwords"
-update_keycloak "$DB_NAME" "$DB_USER" "$DB_PASSWORD"
+update_password "$KEYCLOAK_DB_NAME" "$KEYCLOAK_DB_USER" "$KEYCLOAK_DB_PASSWORD"
 echo ""
