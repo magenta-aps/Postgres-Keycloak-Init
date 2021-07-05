@@ -10,8 +10,7 @@ LABEL org.opencontainers.image.title="Postgres Keycloak OS2mo" \
 
 COPY docker-entrypoint.sh /usr/local/bin/
 COPY setup_common.sh /usr/local/bin/
-COPY setup_lora.sh /usr/local/bin/
-COPY setup_config_db.sh /usr/local/bin/
-COPY setup_session_db.sh /usr/local/bin/
+COPY setup_keycloak.sh /usr/local/bin/
+
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["exit"]
