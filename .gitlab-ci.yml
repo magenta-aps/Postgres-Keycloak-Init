@@ -64,12 +64,11 @@ build_prod:
 .release-default:
   stage: release
   image: alpine
-  variables:
-    GIT_STRATEGY: none # We do not need the source code
   tags:
     - docker
   before_script:
     - apk add skopeo
+
 
 release-master:
   extends: .release-default
