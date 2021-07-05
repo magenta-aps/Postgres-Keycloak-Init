@@ -23,7 +23,7 @@ stages:
 variables:
   # Project variables
   RELEASE_REGISTRY: docker.io
-  RELEASE_REGISTRY_IMAGE: index.docker.io/magentaaps/postgres-keycloak-os2mo
+  RELEASE_REGISTRY_IMAGE: index.docker.io/magentaaps/postgres-keycloak-init
 
   IMAGE_SHA_BASE: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
   IMAGE_TAG_BASE: ${RELEASE_REGISTRY_IMAGE}:${CI_COMMIT_TAG}
