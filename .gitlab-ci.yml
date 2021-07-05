@@ -43,13 +43,13 @@ variables:
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
     - cat postgres-versions.txt | xargs -I PGV sh -c '
-      echo "===== Building ${IMAGE_SHA_BASE}-PGV-${TARGET} =====";
+      echo "===== Building ${IMAGE_SHA_BASE}-PGV-production =====";
       /kaniko/executor
       --context=${CI_PROJECT_DIR}
       --dockerfile=${CI_PROJECT_DIR}/docker/Dockerfile
-      --target=${TARGET}
+      --target=production
       --build-arg POSTGRES_VERSION=PGV
-      --destination=${IMAGE_SHA_BASE}-PGV-${TARGET}
+      --destination=${IMAGE_SHA_BASE}-PGV-production
       --cache=true
       '
 
