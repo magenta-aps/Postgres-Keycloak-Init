@@ -75,5 +75,5 @@ resource "postgresql_grant" "keycloak_grant" {
   database    = postgresql_database.keycloak_db.id
   role        = postgresql_role.keycloak_user.id
   object_type = "database"
-  privileges  = ["ALL"] # i.e. "CREATE", "CONNECT", "TEMPORARY"
+  privileges = ["CREATE", "CONNECT", "TEMPORARY"]  # i.e. "ALL"
 }
