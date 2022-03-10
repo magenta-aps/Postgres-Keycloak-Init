@@ -5,32 +5,14 @@
 
 terraform init -backend-config="conn_str=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres?sslmode=${POSTGRES_SSL}"
 
-echo "" > args.tfvars
+TF_VAR_POSTGRES_HOST=${POSTGRES_HOST}
+TF_VAR_POSTGRES_PORT=${POSTGRES_PORT}
+TF_VAR_POSTGRES_SSL=${POSTGRES_SSL}
+TF_VAR_POSTGRES_USER=${POSTGRES_USER}
+TF_VAR_POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
-if [[ -n "${POSTGRES_HOST}" ]]; then
-    echo "POSTGRES_HOST=\"${POSTGRES_HOST}\"" >> args.tfvars
-fi
-if [[ -n "${POSTGRES_PORT}" ]]; then
-    echo "POSTGRES_PORT=${POSTGRES_PORT}" >> args.tfvars
-fi
-if [[ -n "${POSTGRES_SSL}" ]]; then
-    echo "POSTGRES_SSL=\"${POSTGRES_SSL}\"" >> args.tfvars
-fi
-if [[ -n "${POSTGRES_USER}" ]]; then
-    echo "POSTGRES_USER=\"${POSTGRES_USER}\"" >> args.tfvars
-fi
-if [[ -n "${POSTGRES_PASSWORD}" ]]; then
-    echo "POSTGRES_PASSWORD=\"${POSTGRES_PASSWORD}\"" >> args.tfvars
-fi
-
-if [[ -n "${KEYCLOAK_DB_NAME}" ]]; then
-    echo "KEYCLOAK_DB_NAME=\"${KEYCLOAK_DB_NAME}\"" >> args.tfvars
-fi
-if [[ -n "${KEYCLOAK_DB_USER}" ]]; then
-    echo "KEYCLOAK_DB_USER=\"${KEYCLOAK_DB_USER}\"" >> args.tfvars
-fi
-if [[ -n "${KEYCLOAK_DB_PASSWORD}" ]]; then
-    echo "KEYCLOAK_DB_PASSWORD=\"${KEYCLOAK_DB_PASSWORD}\"" >> args.tfvars
-fi
+TF_VAR_KEYCLOAK_DB_NAME=${KEYCLOAK_DB_NAME}
+TF_VAR_KEYCLOAK_DB_USER=${KEYCLOAK_DB_USER}
+TF_VAR_KEYCLOAK_DB_PASSWORD=${KEYCLOAK_DB_PASSWORD}
 
 terraform apply -auto-approve -input=false -var-file="args.tfvars"
