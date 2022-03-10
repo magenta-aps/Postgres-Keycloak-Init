@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: 2019-2020 Magenta ApS
+# SPDX-License-Identifier: MPL-2.0
+version: "3.9"
+services:
+  postgres:
+    image: postgres:11
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 300s
+
+  keycloak-db-init:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_SSL: disable
+
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+
+      KEYCLOAK_DB_PASSWORD: mykeycloakpassword
+    depends_on:
+      postgres:
+        condition: service_healthy

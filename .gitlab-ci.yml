@@ -5,16 +5,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-################################################################################
-# Changes to this file requires approval from Labs. Please add a person from   #
-# Labs as required approval to your MR if you have any changes.                #
-################################################################################
-
-# For `docker push` to work, the following envionment variables have to set in
-# the Gitlab UI.
-# RELEASE_REGISTRY_USER
-# RELEASE_REGISTRY_PASSWORD
-
 stages:
   - lint-build
   - release
@@ -32,7 +22,7 @@ variables:
 # Build stage
 #############
 
-.build_docker_base:
+build_prod:
   stage: lint-build
   image:
     # We use the `:debug` image as it contains `sh` needed by gitlab-ci.
@@ -42,20 +32,11 @@ variables:
     - docker
   script:
     - echo "{\"auths\":{\"$CI_REGISTRY\":{\"username\":\"$CI_REGISTRY_USER\",\"password\":\"$CI_REGISTRY_PASSWORD\"}}}" > /kaniko/.docker/config.json
-    - cat postgres-versions.txt | xargs -I PGV sh -c '
-      echo "===== Building ${IMAGE_SHA_BASE}-PGV-production =====";
-      /kaniko/executor
+    - /kaniko/executor
       --context=${CI_PROJECT_DIR}
       --dockerfile=${CI_PROJECT_DIR}/docker/Dockerfile
-      --target=production
-      --build-arg POSTGRES_VERSION=PGV
       --destination=${IMAGE_SHA_BASE}-PGV-production
       --cache=true
-      '
-
-
-build_prod:
-  extends: .build_docker_base
 
 
 # Release stage
