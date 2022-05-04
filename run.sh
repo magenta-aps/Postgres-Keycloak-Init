@@ -3,7 +3,9 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 
-terraform init -backend-config="conn_str=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres?sslmode=${POSTGRES_SSL}"
+POSTGRES_SCHEMA_NAME=${POSTGRES_SCHEMA_NAME=:-terraform_state_postgres_keycloak_init}
+
+terraform init -backend-config="conn_str=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/postgres?sslmode=${POSTGRES_SSL}" -backend-config="schema_name=$POSTGRES_SCHEMA_NAME"
 
 TF_VAR_POSTGRES_HOST=${POSTGRES_HOST}
 TF_VAR_POSTGRES_PORT=${POSTGRES_PORT}

@@ -2,9 +2,7 @@
 #
 # SPDX-License-Identifier: MPL-2.0
 terraform {
-  backend "pg" {
-    schema_name = "terraform_state_postgres_keycloak_init"
-  }
+  backend "pg" {}
   required_providers {
     postgresql = {
       source  = "cyrilgdn/postgresql"
