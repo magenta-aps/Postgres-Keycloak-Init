@@ -11,7 +11,7 @@ variables:
 
 include:
   - project: labs/salt-automation
-    file: gitlab-ci-templates/common/docker-build-meta.v1.yml
+    file: gitlab-ci-templates/common/docker-build-meta.v2.yml
   - project: labs/salt-automation
     file: gitlab-ci-templates/common/docker-release.v1.yml
 
