@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: Magenta ApS
 #
 # SPDX-License-Identifier: MPL-2.0
-FROM hashicorp/terraform:1.4.2@sha256:2734886211a482abaff7efbbfd8bdb32295c9c35dda124092d46f39b69f47c42
+FROM hashicorp/terraform:1.4.4@sha256:ae02539998f078b7c0b635ada1e80473a0e9d2d9c41224197ed9a0549650c759
 
 LABEL org.opencontainers.image.title="Postgres Keycloak OS2mo" \
   org.opencontainers.image.description="A docker image containing Postgres initializer code for Keycloak needs." \
